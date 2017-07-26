@@ -94,18 +94,18 @@ namespace Activator
                 }
                 SummonerMenu.Add(SmiteMenu);
 
-                var CleanseMenu = new Menu("cleansemenu", "Cleanse");
+                /*var CleanseMenu = new Menu("cleansemenu", "Cleanse");
                 {
                     CleanseMenu.Add(new MenuBool("usecleanse", "Use Cleanse", true));
-                    // TODO: ADD WHITELIST
-                    /*if (GameObjects.EnemyHeroes.Any())
+                    TODO: ADD WHITELIST
+                    if (GameObjects.EnemyHeroes.Any())
                     {
                         Whitelist = new Menu("cleansewhitelist", "Cleanse Whitelist:");
                         {
                             foreach (var enemy in GameObjects.EnemyHeroes.Where(e => e.SpellBook.Spells()))
                         }
-                    }*/
-                }
+                    }
+                }*/
 
                 var IgniteMenu = new Menu("ignitemenu", "Ignite");
                 {
@@ -129,7 +129,7 @@ namespace Activator
                 }
                 SummonerMenu.Add(IgniteMenu);
 
-                var ExhaustMenu = new Menu("exhaustmenu", "Exhaust");
+                /*var ExhaustMenu = new Menu("exhaustmenu", "Exhaust");
                 {
                     ExhaustMenu.Add(new MenuBool("useexhaust", "Use Exhaust", true));
 
@@ -149,7 +149,7 @@ namespace Activator
                         ExhaustMenu.Add(new MenuSeperator("separator", "No enemies found."));
                     }
                 }
-                SummonerMenu.Add(ExhaustMenu);
+                SummonerMenu.Add(ExhaustMenu);*/
             }
             Menu.Add(SummonerMenu);
 
