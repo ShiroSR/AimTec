@@ -1,0 +1,10 @@
+C:\Users\adria\OneDrive\Documentos\GitHub\AimTec\Activator\Activator\bin\Debug\Activator.exe.config
+C:\Users\adria\OneDrive\Documentos\GitHub\AimTec\Activator\Activator\bin\Debug\Activator.exe
+C:\Users\adria\OneDrive\Documentos\GitHub\AimTec\Activator\Activator\bin\Debug\Activator.pdb
+C:\Users\adria\OneDrive\Documentos\GitHub\AimTec\Activator\Activator\bin\Debug\Aimtec.dll
+C:\Users\adria\OneDrive\Documentos\GitHub\AimTec\Activator\Activator\bin\Debug\Aimtec.SDK.dll
+C:\Users\adria\OneDrive\Documentos\GitHub\AimTec\Activator\Activator\bin\Debug\NLog.dll
+C:\Users\adria\OneDrive\Documentos\GitHub\AimTec\Activator\Activator\bin\Debug\Newtonsoft.Json.dll
+C:\Users\adria\OneDrive\Documentos\GitHub\AimTec\Activator\Activator\obj\Debug\Activator.csprojResolveAssemblyReference.cache
+C:\Users\adria\OneDrive\Documentos\GitHub\AimTec\Activator\Activator\obj\Debug\Activator.exe
+C:\Users\adria\OneDrive\Documentos\GitHub\AimTec\Activator\Activator\obj\Debug\Activator.pdb
