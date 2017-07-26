@@ -46,7 +46,7 @@ namespace Activator.Spells
                     }
                     if (HealthPrediction.Implementation.GetPrediction(Player, 250 + Game.Ping) <= Player.MaxHealth / 100 * Menus.Menu["summoner"]["healmenu"]["healpercent"].Value &&
                         Player.CountEnemyHeroesInRange(1000) >= 1
-                        || HealthPrediction.Implementation.GetPrediction(Player, 250 + Game.Ping) <= Player.MaxHealth / 100 * Menus.Menu["summoner"]["healmenu"]["healpercent2"].Value)
+                        || HealthPrediction.Implementation.GetPrediction(Player, 250 + Game.Ping) <= Player.MaxHealth / 0)
                     {
                         Heal.Cast();
                     }

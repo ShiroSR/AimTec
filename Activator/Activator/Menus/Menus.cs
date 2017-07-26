@@ -43,9 +43,7 @@ namespace Activator
                     }
 
                     HealMenu.Add(new MenuSeperator("healcustom", "Heal Settings"));
-                    HealMenu.Add(new MenuSeperator("sepaarator", "Use Heal when HP% is less than:"));
-                    HealMenu.Add(new MenuSlider("healpercent", ">= 1 Enemy in range", 10, 0, 100));
-                    HealMenu.Add(new MenuSlider("healpercent2", "No enemies in range", 5, 0, 100));
+                    HealMenu.Add(new MenuSlider("healpercent", "Use Heal when HP % is less than:", 10, 0, 100));
                 }
                 SummonerMenu.Add(HealMenu);
 
