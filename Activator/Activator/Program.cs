@@ -37,6 +37,7 @@ namespace Activator
             var SpellHeal = new Heal();
             var SpeallIgnite = new Ignite();
             var SpellSmite = new Smite();
+            Console.WriteLine("Activator loaded!");
         }
     }
 }
