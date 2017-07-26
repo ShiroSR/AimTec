@@ -97,7 +97,6 @@ namespace Activator
                 /*var CleanseMenu = new Menu("cleansemenu", "Cleanse");
                 {
                     CleanseMenu.Add(new MenuBool("usecleanse", "Use Cleanse", true));
-                    TODO: ADD WHITELIST
                     if (GameObjects.EnemyHeroes.Any())
                     {
                         Whitelist = new Menu("cleansewhitelist", "Cleanse Whitelist:");
