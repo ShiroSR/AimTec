@@ -56,7 +56,7 @@ namespace Activator
             {
                 foreach (var inventorySlot in ObjectManager.GetLocalPlayer().Inventory.Slots)
                 {
-                    Console.WriteLine(inventorySlot.SpellName);
+                    //Console.WriteLine(inventorySlot.SpellName);
                 }
             }
         }
