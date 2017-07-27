@@ -9,17 +9,21 @@ using System.Security.Authentication.ExtendedProtection;
 using System.Drawing;
 
 using Aimtec.SDK.Events;
-using Activator.GeneralMenu;
 using Activator.Spells;
 using Activator.Items;
+using Aimtec;
+using Aimtec.SDK.Menu.Components;
 
 namespace Activator
 {
     class Program
     {
+        public static Obj_AI_Hero Player => ObjectManager.GetLocalPlayer();
+
         static void Main()
         {
             GameEvents.GameStart += OnLoad;
+            Game.OnUpdate += OnUpdate;
         }
 
         private static void OnLoad()
@@ -28,16 +32,33 @@ namespace Activator
             var ItemPotions = new Potions();
             var ItemsSupportItems = new SupportItems();
 
-            /*var MenuGeneralMenu = new General();
-            var MenuItemMenus = new ItemMenus();
-            var MenuSpellMenus = new SpellMenus();*/
-            var LoadMenu = new Menus();
+            var MenuGeneralMenu = new GeneralMenu();
+            var MenuItemMenus = new ItemMenu();
+            var MenuSpellMenus = new SpellMenu();
+            var LoadMenuClass = new MenuClass();
 
             var SpellBarrier = new Barrier();
             var SpellHeal = new Heal();
             var SpeallIgnite = new Ignite();
             var SpellSmite = new Smite();
+            var SpellCleanse = new Cleanse();
             Console.WriteLine("Activator loaded!");
+        }
+
+        public static void OnUpdate()
+        {
+            if (Player.IsDead)
+            {
+                return;
+            }
+
+            if (MenuClass.Dev["getname"].As<MenuKeyBind>().Enabled)
+            {
+                foreach (var inventorySlot in ObjectManager.GetLocalPlayer().Inventory.Slots)
+                {
+                    Console.WriteLine(inventorySlot.SpellName);
+                }
+            }
         }
     }
 }

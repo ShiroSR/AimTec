@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Aimtec;
 using Aimtec.SDK;
-using static Activator.GeneralMenu.General;
 using Aimtec.SDK.Prediction.Health;
 using Spell = Aimtec.SDK.Spell;
 using Aimtec.SDK.Menu.Components;
@@ -35,10 +34,12 @@ namespace Activator.Items
             if (ItemRanduins != null)
             {
                 Spell Randuins = new Spell(ItemRanduins.Slot, 500);
-                if (Menus.Menu["items"]["tankitems"]["useranduins"].Enabled)
+                if (MenuClass.SupportItemsMenu["useranduins"].Enabled && Randuins.Ready)
                 {
                     var Enemies = GameObjects.EnemyHeroes.Where(t => t.IsValidTarget(Randuins.Range, true));
-                    foreach (var enemy in Enemies.Where(e => Player.CountEnemyHeroesInRange(Randuins.Range) >= Menus.Menu["items"]["supportitems"]["randuinsslider"].Value))
+                    foreach (var enemy in Enemies.Where(
+                        e => Player.CountEnemyHeroesInRange(Randuins.Range) >=
+                             MenuClass.SupportItemsMenu["randuinsslider"].Value))
                     {
                         Randuins.Cast();
                     }
@@ -49,11 +50,14 @@ namespace Activator.Items
             if (ItemSolari != null)
             {
                 Spell Solari = new Spell(ItemSolari.Slot, 600);
-                if (Menus.Menu["items"]["supportitems"]["usesolari"].Enabled)
+                if (MenuClass.SupportItemsMenu["usesolari"].Enabled && Solari.Ready)
                 {
                     var Allies = GameObjects.AllyHeroes.Where(t => t.IsValidTarget(Solari.Range, true));
-                    foreach (var ally in Allies.Where(a => Player.CountAllyHeroesInRange(Solari.Range) >= Menus.Menu["items"]["supportitems"]["solarislider"].Value &&
-                    a.Health == a.MaxHealth / 100 * Menus.Menu["items"]["supportitems"]["solarislider2"].Value))
+                    foreach (var ally in Allies.Where(
+                        a => Player.CountAllyHeroesInRange(Solari.Range) >=
+                             MenuClass.SupportItemsMenu["solarislider"].Value &&
+                             a.Health == a.MaxHealth / 100 *
+                             MenuClass.SupportItemsMenu["solarislider2"].Value))
                     {
                         Solari.Cast();
                     }
@@ -64,15 +68,18 @@ namespace Activator.Items
             if (ItemFaceOfTheMountain != null)
             {
                 Spell FOTM = new Spell(ItemFaceOfTheMountain.Slot, 700);
-                if (Menus.Menu["items"]["supportitems"]["usefotm"].Enabled)
+                if (MenuClass.SupportItemsMenu["usefotm"].Enabled && FOTM.Ready)
                 {
                     var Allies = GameObjects.AllyHeroes.Where(t => t.IsValidTarget(FOTM.Range, true) && !t.IsMe);
-                    foreach (var ally in Allies.Where(a => Menus.Menu["items"]["supportitems"]["fotmwhitelist"][a.ChampionName.ToLower()].As<MenuBool>().Enabled &&
-                    a.Health <= a.MaxHealth / 100 * Menus.Menu["items"]["supportitems"]["fotmslider"].Value))
+                    foreach (var ally in Allies.Where(
+                        a => MenuClass.SupportItemsMenu["fotmwhitelist"][a.ChampionName.ToLower()]
+                                 .As<MenuBool>().Enabled &&
+                             a.Health <= a.MaxHealth / 100 * MenuClass.SupportItemsMenu["fotmslider"].Value))
                     {
                         FOTM.Cast(ally);
                     }
-                    if (Player.Health <= 300 && Player.CountAllyHeroesInRange(FOTM.Range) == 0 && Player.CountEnemyHeroesInRange(1000) >= 1)
+                    if (Player.Health <= 300 && Player.CountAllyHeroesInRange(FOTM.Range) == 0 &&
+                        Player.CountEnemyHeroesInRange(1000) >= 1)
                     {
                         FOTM.Cast(Player);
                     }

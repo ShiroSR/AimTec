@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Aimtec;
 using Aimtec.SDK;
-using static Activator.GeneralMenu.General;
 using Aimtec.SDK.Prediction.Health;
 using Spell = Aimtec.SDK.Spell;
 using Aimtec.SDK.Menu.Components;
@@ -35,9 +34,10 @@ namespace Activator.Items
             if (HealthPotion != null)
             {
                 Spell HealthP = new Spell(HealthPotion.Slot);
-                if (Menus.Menu["items"]["potionsitems"]["usepotions"].Enabled)
+                if (MenuClass.PotionsItemsMenu["usepotions"].Enabled && HealthP.Ready)
                 {
-                    if (Player.Health <= Player.MaxHealth / 100 * Menus.Menu["items"]["potionsitems"]["potionslider"].Value)
+                    if (Player.Health <= Player.MaxHealth / 100 *
+                        MenuClass.PotionsItemsMenu["potionslider"].Value)
                     {
                         HealthP.Cast();
                     }
@@ -48,9 +48,10 @@ namespace Activator.Items
             if (RefillablePotion != null)
             {
                 Spell RefillableP = new Spell(RefillablePotion.Slot);
-                if (Menus.Menu["items"]["potionsitems"]["userefillable"].Enabled)
+                if (MenuClass.PotionsItemsMenu["userefillable"].Enabled && RefillableP.Ready)
                 {
-                    if (Player.Health <= Player.MaxHealth / 100 * Menus.Menu["items"]["potionsitems"]["refillableslider"].Value)
+                    if (Player.Health <= Player.MaxHealth / 100 *
+                        MenuClass.PotionsItemsMenu["refillableslider"].Value)
                     {
                         if (Player.HasBuff("ItemCrystalFlask"))
                         {

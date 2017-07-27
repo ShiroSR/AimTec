@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Aimtec;
 using Aimtec.SDK;
-using static Activator.GeneralMenu.General;
 using Aimtec.SDK.Prediction.Health;
 using Spell = Aimtec.SDK.Spell;
 using Aimtec.SDK.Util.Cache;
@@ -30,11 +29,11 @@ namespace Activator.Spells
             if (SummonerIgnite != null)
             {
                 Spell Ignite = new Spell(SummonerIgnite.Slot, 600);
-                if (Ignite.Slot != SpellSlot.Unknown && Menus.Menu["summoner"]["ignitemenu"]["useignite"].Enabled)
+                if (Ignite.Slot != SpellSlot.Unknown && MenuClass.IgniteMenu["useignite"].Enabled)
                 {
                     var Enemies = GameObjects.EnemyHeroes.Where(t => t.IsValidTarget(Ignite.Range, true));
                     foreach (var enemy in Enemies.Where(e => e.Health <= 300
-                    && Menus.Menu["summoner"]["ignitemenu"]["ignitewhitelist"][e.ChampionName.ToLower()].As<MenuBool>().Enabled))
+                    && MenuClass.IgniteMenu["ignitewhitelist"][e.ChampionName.ToLower()].As<MenuBool>().Enabled))
                     {
                         if (HealthPrediction.Implementation.GetPrediction(enemy, 100 + Game.Ping) <= enemy.MaxHealth / 0)
                         {

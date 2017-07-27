@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using Activator.Spells;
 using Aimtec;
 using Aimtec.SDK;
-using static Activator.GeneralMenu.General;
 using Aimtec.SDK.Prediction.Health;
 using Spell = Aimtec.SDK.Spell;
 using Aimtec.SDK.Menu.Components;
 using Aimtec.SDK.Util.Cache;
 using Aimtec.SDK.Extensions;
 using Aimtec.SDK.Menu.Config;
+using Aimtec.SDK.Orbwalking;
 
 namespace Activator.Items
 {
@@ -20,6 +22,44 @@ namespace Activator.Items
         public DamageItems()
         {
             Game.OnUpdate += OnUpdate;
+            Orbwalker.Implementation.PostAttack += OnPostAttack;
+        }
+
+        public static void OnPostAttack(object sender, PostAttackEventArgs args)
+        {
+            var ItemTiamatHydra = Player.SpellBook.Spells.Where(o => o != null && o.SpellData != null).FirstOrDefault(o => o.SpellData.Name == "ItemTiamatCleave" || o.SpellData.Name == "ItemTitanicHydraCleave");
+            if (ItemTiamatHydra != null)
+            {
+                if (Player.ChampionName == "Riven")
+                {
+                    return;
+                }
+                Spell Tiamat = new Spell(ItemTiamatHydra.Slot, 400);
+                if (MenuClass.DamageItemsMenu["usetiamat"].Enabled && Tiamat.Ready)
+                {
+                    if (MenuClass.DamageItemsMenu["tiamatlaneclear"].Enabled && GlobalKeys.WaveClearKey.Active)
+                    {
+                        Tiamat.Cast();
+                    }
+                    var Enemies = GameObjects.EnemyHeroes.Where(t => t.IsValidTarget(Tiamat.Range, true) && !t.IsInvulnerable && GlobalKeys.ComboKey.Active);
+                    foreach (var enemy in Enemies.Where(
+                        e => e.Health <= e.MaxHealth / 100 *
+                             MenuClass.DamageItemsMenu["tiamatslider"].Value))
+                    {
+                        Tiamat.Cast();
+                    }
+                }
+            }
+        }
+
+        public static int CountEnemyMinionsInRange(Vector3 vector3, float range)
+        {
+            return GameObjects.EnemyMinions.Count(h => h.IsValidTarget(range, false, false, vector3));
+        }
+
+        public static int CountEnemyMinionsInRange(GameObject unit, float range)
+        {
+            return unit.Position.CountAllyHeroesInRange(range);
         }
 
         public static Obj_AI_Hero Player => ObjectManager.GetLocalPlayer();
@@ -35,18 +75,22 @@ namespace Activator.Items
             if (ItemCutlass != null)
             {
                 Spell Cutlass = new Spell(ItemCutlass.Slot, 550);
-                if (Menus.Menu["items"]["damageitems"]["usecutlass"].Enabled)
+                if (MenuClass.DamageItemsMenu["usecutlass"].Enabled && Cutlass.Ready)
                 {
-                    var Enemies = GameObjects.EnemyHeroes.Where(t => t.IsValidTarget(Cutlass.Range, true));
+                    var Enemies = GameObjects.EnemyHeroes.Where(t => t.IsValidTarget(Cutlass.Range, true) && !t.IsInvulnerable);
                     foreach (var enemy in Enemies.Where(e =>
-                    // TODO: CHANGE LOGICS
-                    e.Health <= Player.Health && Player.CountEnemyHeroesInRange(1000) <= 1 ||
-                    e.IsFacing(Player) && e.Health >= Player.Health && Player.CountEnemyHeroesInRange(1000) <= 1 ||
-                    e.TotalAttackDamage >= Player.TotalAttackDamage && Player.CountEnemyHeroesInRange(1000) == 2 ||
-                    e.IsFacing(Player) && e.Health >= Player.Health && Player.CountEnemyHeroesInRange(1000) >= 3 ||
-                    e.IsFacing(Player) && e.TotalAttackDamage >= Player.TotalAttackDamage && Player.CountEnemyHeroesInRange(1000) <= 3))
+                        // TODO: CHANGE LOGICS
+                            e.Health <= Player.Health && Player.CountEnemyHeroesInRange(1000) <= 1 ||
+                            e.IsFacing(Player) && e.Health >= Player.Health &&
+                            Player.CountEnemyHeroesInRange(1000) <= 1 ||
+                            e.TotalAttackDamage >= Player.TotalAttackDamage &&
+                            Player.CountEnemyHeroesInRange(1000) == 2 ||
+                            e.IsFacing(Player) && e.Health >= Player.Health &&
+                            Player.CountEnemyHeroesInRange(1000) >= 3 ||
+                            e.IsFacing(Player) && e.TotalAttackDamage >= Player.TotalAttackDamage &&
+                            Player.CountEnemyHeroesInRange(1000) <= 3))
                     {
-                        if (Menus.Menu["items"]["damageitems"]["onlycombo"].Enabled && !GlobalKeys.ComboKey.Active)
+                        if (MenuClass.DamageItemsMenu["onlycombo"].Enabled && !GlobalKeys.ComboKey.Active)
                         {
                             return;
                         }
@@ -59,17 +103,22 @@ namespace Activator.Items
             if (ItemBOTRK != null)
             {
                 Spell BOTRK = new Spell(ItemBOTRK.Slot, 550);
-                if (Menus.Menu["items"]["damageitems"]["usebotrk"].Enabled)
+                if (MenuClass.DamageItemsMenu["usebotrk"].Enabled && BOTRK.Ready)
                 {
                     var Enemies = GameObjects.EnemyHeroes.Where(t => t.IsValidTarget(BOTRK.Range, true));
                     foreach (var enemy in Enemies.Where(e =>
-                    e.Health <= Player.Health && Player.CountEnemyHeroesInRange(1000) <= 1 ||
-                    e.IsFacing(Player) && e.Health >= Player.Health && Player.CountEnemyHeroesInRange(1000) <= 1 ||
-                    e.TotalAttackDamage >= Player.TotalAttackDamage && Player.CountEnemyHeroesInRange(1000) == 2 ||
-                    e.IsFacing(Player) && e.Health >= Player.Health && Player.CountEnemyHeroesInRange(1000) >= 3 ||
-                    e.IsFacing(Player) && e.TotalAttackDamage >= Player.TotalAttackDamage && Player.CountEnemyHeroesInRange(1000) <= 3))
+                        // TODO: IMPROVE LOGICS
+                            e.Health <= Player.Health && Player.CountEnemyHeroesInRange(1000) <= 1 ||
+                            e.IsFacing(Player) && e.Health >= Player.Health &&
+                            Player.CountEnemyHeroesInRange(1000) <= 1 ||
+                            e.TotalAttackDamage >= Player.TotalAttackDamage &&
+                            Player.CountEnemyHeroesInRange(1000) == 2 ||
+                            e.IsFacing(Player) && e.Health >= Player.Health &&
+                            Player.CountEnemyHeroesInRange(1000) >= 3 ||
+                            e.IsFacing(Player) && e.TotalAttackDamage >= Player.TotalAttackDamage &&
+                            Player.CountEnemyHeroesInRange(1000) <= 3))
                     {
-                        if (Menus.Menu["items"]["damageitems"]["onlycombo"].Enabled && !GlobalKeys.ComboKey.Active)
+                        if (MenuClass.DamageItemsMenu["onlycombo"].Enabled && !GlobalKeys.ComboKey.Active)
                         {
                             return;
                         }
@@ -82,12 +131,12 @@ namespace Activator.Items
             if (ItemHextechGLP != null)
             {
                 Spell GLP = new Spell(ItemHextechGLP.Slot, 850);
-                if (Menus.Menu["items"]["damageitems"]["useglp"].Enabled)
+                if (MenuClass.DamageItemsMenu["useglp"].Enabled && GLP.Ready)
                 {
-                    var Enemies = GameObjects.EnemyHeroes.Where(t => t.IsValidTarget(GLP.Range, true));
-                    foreach (var enemy in Enemies.Where(e => Player.CountEnemyHeroesInRange(GLP.Range) >= Menus.Menu["items"]["damageitems"]["glpslider"].Value))
+                    var Enemies = GameObjects.EnemyHeroes.Where(t => t.IsValidTarget(GLP.Range, true) && !t.IsInvulnerable);
+                    foreach (var enemy in Enemies.Where(e => Player.CountEnemyHeroesInRange(GLP.Range) >= MenuClass.DamageItemsMenu["glpslider"].Value))
                     {
-                        if (Menus.Menu["items"]["damageitems"]["onlycombo"].Enabled && !GlobalKeys.ComboKey.Active)
+                        if (MenuClass.DamageItemsMenu["onlycombo"].Enabled && !GlobalKeys.ComboKey.Active)
                         {
                             return;
                         }
@@ -100,12 +149,17 @@ namespace Activator.Items
             if (ItemGunblade != null)
             {
                 Spell Gunblade = new Spell(ItemGunblade.Slot, 700);
-                if (Menus.Menu["items"]["damageitems"]["usegunblade"].Enabled)
+                if (MenuClass.DamageItemsMenu["usegunblade"].Enabled && Gunblade.Ready)
                 {
-                    var Enemies = GameObjects.EnemyHeroes.Where(t => t.IsValidTarget(Gunblade.Range, true));
+                    var Enemies = GameObjects.EnemyHeroes.Where(t => t.IsValidTarget(Gunblade.Range, true) && !t.IsInvulnerable);
                     foreach (var enemy in Enemies.Where(e => e.Health <= 200 &&
-                    Menus.Menu["items"]["damageitems"]["gunbladewhitelist"][e.ChampionName.ToLower()].As<MenuBool>().Enabled))
+                                                             MenuClass.DamageItemsMenu["gunbladewhitelist"][
+                                                                 e.ChampionName.ToLower()].As<MenuBool>().Enabled))
                     {
+                        if (MenuClass.DamageItemsMenu["onlycombo"].Enabled && !GlobalKeys.ComboKey.Active)
+                        {
+                            return;
+                        }
                         if (HealthPrediction.Implementation.GetPrediction(enemy, 100 + Game.Ping) <= enemy.MaxHealth / 0)
                         {
                             Gunblade.Cast(enemy);
@@ -114,6 +168,23 @@ namespace Activator.Items
                         {
                             return;
                         }
+                    }
+                }
+            }
+            var ItemQSS = Player.SpellBook.Spells.Where(o => o != null && o.SpellData != null).FirstOrDefault(o => o.SpellData.Name == "ItemMercurial" || o.SpellData.Name == "QuicksilverSash");
+            if (ItemQSS != null)
+            {
+                Spell QSS = new Spell(ItemQSS.Slot);
+                if (MenuClass.DamageItemsMenu["useqss"].Enabled && QSS.Ready)
+                {
+                    if (Player.HasBuffOfType(BuffType.Stun) && MenuClass.CCMenu["BuffType.Stun"].Enabled ||
+                        Player.HasBuffOfType(BuffType.Fear) && MenuClass.CCMenu["BuffType.Fear"].Enabled ||
+                        Player.HasBuffOfType(BuffType.Flee) && MenuClass.CCMenu["BuffType.Flee"].Enabled ||
+                        Player.HasBuffOfType(BuffType.Snare) && MenuClass.CCMenu["BuffType.Snare"].Enabled ||
+                        Player.HasBuffOfType(BuffType.Taunt) && MenuClass.CCMenu["BuffType.Taunt"].Enabled ||
+                        Player.HasBuffOfType(BuffType.Charm) && MenuClass.CCMenu["BuffType.Charm"].Enabled)
+                    {
+                        QSS.Cast();
                     }
                 }
             }

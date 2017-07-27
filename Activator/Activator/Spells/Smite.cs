@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Aimtec;
 using Aimtec.SDK;
-using static Activator.GeneralMenu.General;
 using Aimtec.SDK.Prediction.Health;
 using Spell = Aimtec.SDK.Spell;
 using Aimtec.SDK.Extensions;
 using System.Drawing;
+using System.Net;
+using Aimtec.SDK.Damage;
+using Aimtec.SDK.Events;
 
 namespace Activator.Spells
 {
@@ -51,17 +53,17 @@ namespace Activator.Spells
             if (SummonerSmite != null)
             {
                 Spell Smite = new Spell(SummonerSmite.Slot, 560);
-                if (Smite.Slot != SpellSlot.Unknown && Menus.Menu["summoner"]["smitemenu"]["usesmite"].Enabled)
+                if (Smite.Slot != SpellSlot.Unknown && MenuClass.SmiteMenu["usesmite"].Enabled)
                 {
-                    if (!Menus.Menu["summoner"]["smitemenu"]["smiteactive"].Enabled)
+                    if (!MenuClass.SmiteMenu["smiteactive"].Enabled)
                     {
-                        if (Render.WorldToScreen(Player.Position, out Vector2 coord) && Menus.Menu["summoner"]["smitemenu"]["statusdrawing"].Enabled)
+                        if (Render.WorldToScreen(Player.Position, out Vector2 coord) && MenuClass.SmiteMenu["statusdrawing"].Enabled)
                         {
                             coord.Y -= -30;
                             coord.X -= +35;
                             Render.Text(coord.X, coord.Y, Color.Red, "SMITE DISABLED.");
                         }
-                        if (Menus.Menu["summoner"]["smitemenu"]["rangedrawing"].Enabled)
+                        if (MenuClass.SmiteMenu["rangedrawing"].Enabled)
                         {
                             Render.Circle(Player.Position, Smite.Range, 30, Color.Red);
                         }
@@ -70,13 +72,13 @@ namespace Activator.Spells
                     {
                         if (Smite.Ready)
                         {
-                            if (Render.WorldToScreen(Player.Position, out Vector2 coord) && Menus.Menu["summoner"]["smitemenu"]["statusdrawing"].Enabled)
+                            if (Render.WorldToScreen(Player.Position, out Vector2 coord) && MenuClass.SmiteMenu["statusdrawing"].Enabled)
                             {
                                 coord.Y -= -30;
                                 coord.X -= +35;
                                 Render.Text(coord.X, coord.Y, Color.Lime, "SMITE READY.");
                             }
-                            if (Menus.Menu["summoner"]["smitemenu"]["rangedrawing"].Enabled)
+                            if (MenuClass.SmiteMenu["rangedrawing"].Enabled)
                             {
                                 Render.Circle(Player.Position, Smite.Range, 30, Color.Lime);
                             }
@@ -84,36 +86,89 @@ namespace Activator.Spells
                             {
                                 if (Obj.UnitSkinName.Contains("Dragon"))
                                 {
-                                    if (Menus.Menu["summoner"]["smitemenu"]["dragons"][Obj.UnitSkinName].Enabled)
+                                    if (MenuClass.Dragons[Obj.UnitSkinName].Enabled)
                                     {
                                         Smite.Cast(Obj);
                                     }
                                 }
                                 if (pMobs.Contains(Obj.UnitSkinName))
                                 {
-                                    if (Menus.Menu["summoner"]["smitemenu"]["epicmonsters"][Obj.UnitSkinName].Enabled)
+                                    if (MenuClass.EpicMonsters[Obj.UnitSkinName].Enabled)
                                     {
                                         Smite.Cast(Obj);
                                     }
                                 }
                                 if (small.Contains(Obj.UnitSkinName))
                                 {
-                                    if (Menus.Menu["summoner"]["smitemenu"]["normalmonsters"][Obj.UnitSkinName].Enabled)
+                                    if (MenuClass.Monsters[Obj.UnitSkinName].Enabled)
                                     {
                                         Smite.Cast(Obj);
                                     }
                                 }
                             }
+                            if (MenuClass.SmiteMenu["damagedrawing"].Enabled)
+                            {
+                                ObjectManager.Get<Obj_AI_Minion>()
+                                    .Where(h => DrawingClass.JungleList.Contains(h.UnitSkinName) && h.IsValidTarget(Smite.Range, true))
+                                    .ToList()
+                                    .ForEach(
+                                        unit =>
+                                        {
+                                            if (pMobs.Contains(unit.UnitSkinName) && !MenuClass.EpicMonsters[unit.UnitSkinName].Enabled)
+                                            {
+                                                return;
+                                            }
+                                            if (unit.UnitSkinName.Contains("Dragon") && !MenuClass.Dragons[unit.UnitSkinName].Enabled)
+                                            {
+                                                return;
+                                            }
+                                            if (small.Contains(unit.UnitSkinName) && !MenuClass.Monsters[unit.UnitSkinName].Enabled)
+                                            {
+                                                return;
+                                            }
+                                            var jungleList = DrawingClass.JungleList;
+                                            var mobOffset = DrawingClass.JungleHpBarOffsetList1080p.FirstOrDefault(x => x.UnitSkinName.Equals(unit.UnitSkinName));
+                                            int width;
+                                            if (jungleList.Contains(unit.UnitSkinName))
+                                            {
+                                                width = mobOffset != null ? mobOffset.Width : DrawingClass.SWidth;
+                                            }
+                                            else
+                                            {
+                                                width = DrawingClass.SWidth;
+                                            }
+
+                                            int height;
+                                            if (jungleList.Contains(unit.UnitSkinName))
+                                            {
+                                                height = mobOffset != null ? mobOffset.Height : DrawingClass.SHeight;
+                                            }
+                                            else
+                                            {
+                                                height = DrawingClass.SHeight;
+                                            }
+
+                                            var barPos = unit.FloatingHealthBarPosition;
+
+                                            var drawEndXPos = (float)(barPos.X + (unit.Health > SmiteDamages
+                                                                          ? width * ((0 + SmiteDamages) / unit.MaxHealth * 100 / 100)
+                                                                          : 0));
+                                            var drawStartXPos = barPos.X + width * (unit.MaxHealth * 0);
+
+                                            Render.Line(drawStartXPos, barPos.Y, drawEndXPos, barPos.Y, height, true, unit.Health < SmiteDamages ? Color.Blue : Color.Orange);
+                                            Render.Line(drawEndXPos, barPos.Y, drawEndXPos, barPos.Y + height + 1, 1, true, Color.Lime);
+                                        });
+                            }
                         }
                         else
                         {
-                            if (Render.WorldToScreen(Player.Position, out Vector2 coord) && Menus.Menu["summoner"]["smitemenu"]["statusdrawing"].Enabled)
+                            if (Render.WorldToScreen(Player.Position, out Vector2 coord) && MenuClass.SmiteMenu["statusdrawing"].Enabled)
                             {
                                 coord.Y -= -30;
                                 coord.X -= +55;
                                 Render.Text(coord.X, coord.Y, Color.DarkViolet, "SMITE ON COOLDOWN.");
                             }
-                            if (Menus.Menu["summoner"]["smitemenu"]["rangedrawing"].Enabled)
+                            if (MenuClass.SmiteMenu["rangedrawing"].Enabled)
                             {
                                 Render.Circle(Player.Position, Smite.Range, 30, Color.DarkViolet);
                             }
@@ -121,6 +176,6 @@ namespace Activator.Spells
                     }
                 }
             }
-        }
+    }
     }
 }

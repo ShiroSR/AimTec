@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Aimtec;
 using Aimtec.SDK;
-using static Activator.GeneralMenu.General;
 using Aimtec.SDK.Prediction.Health;
 using Spell = Aimtec.SDK.Spell;
 using Aimtec.SDK.Menu.Components;
@@ -34,17 +33,17 @@ namespace Activator.Spells
             if (SummonerHeal != null)
             {
                 Spell Heal = new Spell(SummonerHeal.Slot, 850);
-                if (Heal.Slot != SpellSlot.Unknown && Menus.Menu["summoner"]["healmenu"]["useheal"].Enabled)
+                if (Heal.Slot != SpellSlot.Unknown && MenuClass.HealMenu["useheal"].Enabled)
                 {
                     var Allies = GameObjects.AllyHeroes.Where(t => !t.IsMe && t.IsValidTarget(Heal.Range, true));
-                    foreach (var ally in Allies.Where(a => Menus.Menu["summoner"]["healmenu"]["healwhitelist"][a.ChampionName.ToLower()].As<MenuBool>().Enabled &&
-                        Menus.Menu["summoner"]["healmenu"]["useallies"].Enabled &&
+                    foreach (var ally in Allies.Where(a => MenuClass.HealMenu["healwhitelist"][a.ChampionName.ToLower()].As<MenuBool>().Enabled &&
+                                                           MenuClass.HealMenu["useallies"].Enabled &&
                         a.CountEnemyHeroesInRange(Player.AttackRange) >= 1 &&
-                        a.Health <= a.MaxHealth / 100 * Menus.Menu["summoner"]["healmenu"]["healcustom"]["healpercent"].Value))
+                        a.Health <= a.MaxHealth / 100 * MenuClass.HealMenu["healcustom"]["healpercent"].Value))
                     {
                         Heal.Cast();
                     }
-                    if (HealthPrediction.Implementation.GetPrediction(Player, 250 + Game.Ping) <= Player.MaxHealth / 100 * Menus.Menu["summoner"]["healmenu"]["healpercent"].Value &&
+                    if (HealthPrediction.Implementation.GetPrediction(Player, 250 + Game.Ping) <= Player.MaxHealth / 100 * MenuClass.HealMenu["healpercent"].Value &&
                         Player.CountEnemyHeroesInRange(1000) >= 1
                         || HealthPrediction.Implementation.GetPrediction(Player, 250 + Game.Ping) <= Player.MaxHealth * 0)
                     {

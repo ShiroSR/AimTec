@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Aimtec;
 using Aimtec.SDK;
-using static Activator.GeneralMenu.General;
 using Aimtec.SDK.Prediction.Health;
 using Spell = Aimtec.SDK.Spell;
 
@@ -31,9 +30,9 @@ namespace Activator.Spells
             if (SummonerBarrier != null)
             {
                 Spell Barrier = new Spell(SummonerBarrier.Slot);
-                if (Barrier.Slot != SpellSlot.Unknown && Menus.Menu["summoner"]["barriermenu"]["usebarrier"].Enabled)
+                if (Barrier.Slot != SpellSlot.Unknown && MenuClass.BarrierMenu["usebarrier"].Enabled)
                 {
-                    if (HealthPrediction.Implementation.GetPrediction(Player, 250 + Game.Ping) <= Player.MaxHealth / 100 * Menus.Menu["summoner"]["barriermenu"]["barrierslider"].Value)
+                    if (HealthPrediction.Implementation.GetPrediction(Player, 250 + Game.Ping) <= Player.MaxHealth / 100 * MenuClass.BarrierMenu["barrierslider"].Value)
                     {
                         Barrier.Cast();
                     }
