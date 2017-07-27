@@ -27,16 +27,6 @@ namespace Activator.Spells
             }
         }
 
-        private static int SmiteDamagesChamp
-        {
-            get
-            {
-                int[] Dmg = new int[] { 28, 36, 44, 52, 60, 68, 76, 84, 92, 100, 108, 116, 124, 132, 140, 148, 156, 166 };
-
-                return Dmg[Player.Level - 1];
-            }
-        }
-
         private static string[] pMobs = new string[] { "SRU_Baron", "SRU_RiftHerald" };
         private static string[] small = new string[] { "SRU_Blue", "SRU_Red", "SRU_Murkwolf", "SRU_Razorbeak", "SRU_Gromp", "SRU_Krug", "Sru_Crab" };
 
