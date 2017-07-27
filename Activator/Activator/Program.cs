@@ -23,7 +23,7 @@ namespace Activator
         static void Main()
         {
             GameEvents.GameStart += OnLoad;
-            Game.OnUpdate += OnUpdate;
+            //Game.OnUpdate += OnUpdate;
         }
 
         private static void OnLoad()
@@ -45,7 +45,7 @@ namespace Activator
             Console.WriteLine("Activator loaded!");
         }
 
-        public static void OnUpdate()
+        /*public static void OnUpdate()
         {
             if (Player.IsDead)
             {
@@ -59,6 +59,6 @@ namespace Activator
                     //Console.WriteLine(inventorySlot.SpellName);
                 }
             }
-        }
+        }*/
     }
 }
