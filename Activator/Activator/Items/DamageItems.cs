@@ -105,17 +105,17 @@ namespace Activator.Items
                 Spell BOTRK = new Spell(ItemBOTRK.Slot, 550);
                 if (MenuClass.DamageItemsMenu["usebotrk"].Enabled && BOTRK.Ready)
                 {
-                    var Enemies = GameObjects.EnemyHeroes.Where(t => t.IsValidTarget(BOTRK.Range, true));
+                    var Enemies = GameObjects.EnemyHeroes.Where(t => t.IsValidTarget(BOTRK.Range, true) && !t.IsInvulnerable);
                     foreach (var enemy in Enemies.Where(e =>
                         // TODO: IMPROVE LOGICS
                             e.Health <= Player.Health && Player.CountEnemyHeroesInRange(1000) <= 1 ||
                             e.IsFacing(Player) && e.Health >= Player.Health &&
                             Player.CountEnemyHeroesInRange(1000) <= 1 ||
-                            e.TotalAttackDamage >= Player.TotalAttackDamage &&
-                            Player.CountEnemyHeroesInRange(1000) == 2 ||
+                            e.TotalAttackDamage >= 100 &&
+                            Player.CountEnemyHeroesInRange(1000) <= 2 ||
                             e.IsFacing(Player) && e.Health >= Player.Health &&
                             Player.CountEnemyHeroesInRange(1000) >= 3 ||
-                            e.IsFacing(Player) && e.TotalAttackDamage >= Player.TotalAttackDamage &&
+                            e.TotalAttackDamage >= Player.TotalAttackDamage &&
                             Player.CountEnemyHeroesInRange(1000) <= 3))
                     {
                         if (MenuClass.DamageItemsMenu["onlycombo"].Enabled && !GlobalKeys.ComboKey.Active)
