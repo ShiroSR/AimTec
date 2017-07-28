@@ -10,6 +10,7 @@ using Spell = Aimtec.SDK.Spell;
 using Aimtec.SDK.Util.Cache;
 using Aimtec.SDK.Extensions;
 using Aimtec.SDK.Menu.Components;
+using Aimtec.SDK.Menu.Config;
 
 namespace Activator.Spells
 {
@@ -35,6 +36,10 @@ namespace Activator.Spells
                     foreach (var enemy in Enemies.Where(e => e.Health <= 300
                     && MenuClass.IgniteMenu["ignitewhitelist"][e.ChampionName.ToLower()].As<MenuBool>().Enabled))
                     {
+                        if (!GlobalKeys.ComboKey.Active)
+                        {
+                            return;
+                        }
                         if (HealthPrediction.Implementation.GetPrediction(enemy, 100 + Game.Ping) <= enemy.MaxHealth / 0)
                         {
                             Ignite.Cast(enemy);
