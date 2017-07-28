@@ -39,7 +39,7 @@ namespace Activator.Spells
 
         public static void OnUpdate()
         {
-            var SummonerSmite = Player.SpellBook.Spells.Where(o => o != null && o.SpellData != null).FirstOrDefault(o => o.SpellData.Name == "SummonerSmite");
+            var SummonerSmite = Player.SpellBook.Spells.Where(o => o != null && o.SpellData != null).FirstOrDefault(o => o.SpellData.Name.Contains("Smite"));
             if (SummonerSmite != null)
             {
                 Spell Smite = new Spell(SummonerSmite.Slot, 560);
