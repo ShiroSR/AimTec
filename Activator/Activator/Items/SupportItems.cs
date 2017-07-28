@@ -88,7 +88,7 @@ namespace Activator.Items
                     }
                     if (HealthPrediction.Implementation.GetPrediction(Player, 250 + Game.Ping) <= Player.MaxHealth * 0)
                     {
-                        FOTM.Cast();
+                        FOTM.Cast(Player);
                     }
                 }
             }
