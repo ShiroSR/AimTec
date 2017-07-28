@@ -39,6 +39,10 @@ namespace Activator.Items
                     if (Player.Health <= Player.MaxHealth / 100 *
                         MenuClass.PotionsItemsMenu["potionslider"].Value)
                     {
+                        if (Player.HasBuff("RegenerationPotion") || Player.HasBuff("ItemMiniRegenPotion"))
+                        {
+                            return;
+                        }
                         HealthP.Cast();
                     }
                 }

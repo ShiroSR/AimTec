@@ -43,6 +43,10 @@ namespace Activator.Items
                     {
                         Randuins.Cast();
                     }
+                    if (HealthPrediction.Implementation.GetPrediction(Player, 250 + Game.Ping) <= Player.MaxHealth * 0)
+                    {
+                        Randuins.Cast();
+                    }
                 }
             }
 
@@ -58,6 +62,10 @@ namespace Activator.Items
                              MenuClass.SupportItemsMenu["solarislider"].Value &&
                              a.Health == a.MaxHealth / 100 *
                              MenuClass.SupportItemsMenu["solarislider2"].Value))
+                    {
+                        Solari.Cast();
+                    }
+                    if (HealthPrediction.Implementation.GetPrediction(Player, 250 + Game.Ping) <= Player.MaxHealth * 0)
                     {
                         Solari.Cast();
                     }
@@ -78,10 +86,9 @@ namespace Activator.Items
                     {
                         FOTM.Cast(ally);
                     }
-                    if (Player.Health <= 300 && Player.CountAllyHeroesInRange(FOTM.Range) == 0 &&
-                        Player.CountEnemyHeroesInRange(1000) >= 1)
+                    if (HealthPrediction.Implementation.GetPrediction(Player, 250 + Game.Ping) <= Player.MaxHealth * 0)
                     {
-                        FOTM.Cast(Player);
+                        FOTM.Cast();
                     }
                 }
             }
