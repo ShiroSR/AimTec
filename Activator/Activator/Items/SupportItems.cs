@@ -60,7 +60,7 @@ namespace Activator.Items
                     foreach (var ally in Allies.Where(
                         a => Player.CountAllyHeroesInRange(Solari.Range) >=
                              MenuClass.SupportItemsMenu["solarislider"].Value &&
-                             a.Health == a.MaxHealth / 100 *
+                             a.Health <= a.MaxHealth / 100 *
                              MenuClass.SupportItemsMenu["solarislider2"].Value))
                     {
                         Solari.Cast();
