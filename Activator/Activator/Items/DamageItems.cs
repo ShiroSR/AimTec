@@ -151,22 +151,36 @@ namespace Activator.Items
                 Spell Gunblade = new Spell(ItemGunblade.Slot, 700);
                 if (MenuClass.DamageItemsMenu["usegunblade"].Enabled && Gunblade.Ready)
                 {
-                    var Enemies = GameObjects.EnemyHeroes.Where(t => t.IsValidTarget(Gunblade.Range, true) && !t.IsInvulnerable);
-                    foreach (var enemy in Enemies.Where(e => e.Health <= 200 &&
-                                                             MenuClass.DamageItemsMenu["gunbladewhitelist"][
-                                                                 e.ChampionName.ToLower()].As<MenuBool>().Enabled))
+                    if (MenuClass.DamageItemsMenu["onlycombo"].Enabled && !GlobalKeys.ComboKey.Active)
                     {
-                        if (MenuClass.DamageItemsMenu["onlycombo"].Enabled && !GlobalKeys.ComboKey.Active)
-                        {
-                            return;
-                        }
-                        if (HealthPrediction.Implementation.GetPrediction(enemy, 100 + Game.Ping) <= enemy.MaxHealth / 0)
+                        return;
+                    }
+                    if (MenuClass.DamageItemsMenu["gunbladewhenXhp"].Enabled)
+                    {
+                        var Enemies = GameObjects.EnemyHeroes.Where(t => t.IsValidTarget(Gunblade.Range, true) && !t.IsInvulnerable);
+                        foreach (var enemy in Enemies.Where(
+                            e => e.Health <= e.MaxHealth / 100 * MenuClass.DamageItemsMenu["gunbladeslider"].Value &&
+                                 MenuClass.DamageItemsMenu["gunbladewhitelist"][
+                                     e.ChampionName.ToLower()].As<MenuBool>().Enabled))
                         {
                             Gunblade.Cast(enemy);
                         }
-                        else
+                    }
+                    else
+                    {
+                        var Enemies = GameObjects.EnemyHeroes.Where(t => t.IsValidTarget(Gunblade.Range, true) && !t.IsInvulnerable);
+                        foreach (var enemy in Enemies.Where(e => e.Health <= 200 &&
+                                                                 MenuClass.DamageItemsMenu["gunbladewhitelist"][
+                                                                     e.ChampionName.ToLower()].As<MenuBool>().Enabled))
                         {
-                            return;
+                            if (HealthPrediction.Implementation.GetPrediction(enemy, 100 + Game.Ping) <= enemy.MaxHealth / 0)
+                            {
+                                Gunblade.Cast(enemy);
+                            }
+                            else
+                            {
+                                return;
+                            }
                         }
                     }
                 }
@@ -177,6 +191,10 @@ namespace Activator.Items
                 Spell QSS = new Spell(ItemQSS.Slot);
                 if (MenuClass.DamageItemsMenu["useqss"].Enabled && QSS.Ready)
                 {
+                    if (MenuClass.DamageItemsMenu["onlycombo"].Enabled && !GlobalKeys.ComboKey.Active)
+                    {
+                        return;
+                    }
                     if (Player.HasBuffOfType(BuffType.Stun) && MenuClass.CCMenu["BuffType.Stun"].Enabled ||
                         Player.HasBuffOfType(BuffType.Fear) && MenuClass.CCMenu["BuffType.Fear"].Enabled ||
                         Player.HasBuffOfType(BuffType.Flee) && MenuClass.CCMenu["BuffType.Flee"].Enabled ||

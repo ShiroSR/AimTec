@@ -26,6 +26,8 @@ namespace Activator
                 MenuClass.DamageItemsMenu.Add(new MenuBool("onlycombo", "Only use Damage Items if Combo key is pressed"));
                 MenuClass.DamageItemsMenu.Add(new MenuSlider("glpslider", "Use GLP-800 when enemies in range >=", 2, 1, 5));
                 MenuClass.DamageItemsMenu.Add(new MenuSlider("tiamatslider", "Use Hydra when enemy HP% is less than:", 70, 0, 100));
+                MenuClass.DamageItemsMenu.Add(new MenuBool("gunbladewhenXhp", "Use Gunblade with HP%", false));
+                MenuClass.DamageItemsMenu.Add(new MenuSlider("gunbladeslider","Use Gunblade when enemy HP% is less than:", 70, 0, 100));
                 MenuClass.WhitelistEnemies = new Menu("gunbladewhitelist", "Gunblade Whitelist:");
                 MenuClass.DamageItemsMenu.Add(MenuClass.WhitelistEnemies);
                 if (GameObjects.EnemyHeroes.Any())
@@ -81,8 +83,8 @@ namespace Activator
 
             MenuClass.PotionsItemsMenu = new Menu("potionsitems", "Potions");
             {
-                MenuClass.PotionsItemsMenu.Add(new MenuBool("usepotions", "Use Health Potions", true));
-                MenuClass.PotionsItemsMenu.Add(new MenuBool("userefillable", "Use Refillable Potions", false));
+                MenuClass.PotionsItemsMenu.Add(new MenuBool("usepotions", "Use Health Potions"));
+                MenuClass.PotionsItemsMenu.Add(new MenuBool("userefillable", "Use Refillable Potions"));
                 MenuClass.PotionsItemsMenu.Add(new MenuSeperator("potionsettings", "Potion Settings"));
                 MenuClass.PotionsItemsMenu.Add(new MenuSlider("potionslider", "Use Health Potions when HP is less than", 40, 0, 100));
                 MenuClass.PotionsItemsMenu.Add(new MenuSlider("refillableslider", "Use Refillable Potions when HP is less than", 40, 0, 100));

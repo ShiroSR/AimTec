@@ -30,7 +30,7 @@ namespace Activator.Items
                 return;
             }
 
-            var HealthPotion = Player.SpellBook.Spells.Where(o => o != null && o.SpellData != null).FirstOrDefault(o => o.SpellData.Name == "RegenerationPotion");
+            var HealthPotion = Player.SpellBook.Spells.Where(o => o != null && o.SpellData != null).FirstOrDefault(o => o.SpellData.Name == "RegenerationPotion" || o.SpellData.Name == "ItemMiniRegenPotion");
             if (HealthPotion != null)
             {
                 Spell HealthP = new Spell(HealthPotion.Slot);
