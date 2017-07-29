@@ -191,10 +191,6 @@ namespace Activator.Items
                 Spell QSS = new Spell(ItemQSS.Slot);
                 if (MenuClass.DamageItemsMenu["useqss"].Enabled && QSS.Ready)
                 {
-                    if (MenuClass.DamageItemsMenu["onlycombo"].Enabled && !GlobalKeys.ComboKey.Active)
-                    {
-                        return;
-                    }
                     if (Player.HasBuffOfType(BuffType.Stun) && MenuClass.CCMenu["BuffType.Stun"].Enabled ||
                         Player.HasBuffOfType(BuffType.Fear) && MenuClass.CCMenu["BuffType.Fear"].Enabled ||
                         Player.HasBuffOfType(BuffType.Flee) && MenuClass.CCMenu["BuffType.Flee"].Enabled ||
